@@ -1,10 +1,10 @@
 {
-  "name": "dpkg-status",
+  "name": "dpkg-status-backend",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
   "scripts": {
-    
+    "start": "node app"
   },
   "author": "Tatu Riihimäki",
   "license": "ISC"

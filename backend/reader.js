@@ -80,7 +80,7 @@ module.exports.readRawPackage = (packageName) => {
 
             } else if(packageFound) {
 
-                // Don't lowecase line, when working with description field.
+                // Don't lowercase line, when working with description field.
                 if(line.startsWith("description") || line.startsWith("Description")) {
                     package.description = getValue(line);
                 } else if(line.indexOf(" ") === 0 && package.description) {
