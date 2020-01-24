@@ -1,7 +1,7 @@
 <template>
     <div id="package-list">
         <ul>
-            <li v-for="(pkg, i) in packages" v-bind:key="i" v-on:click="viewPackage(pkg)">
+            <li v-for="(pkg, i) in packages" v-bind:key="i" v-on:click="requestPackageDetails(pkg)">
                 {{pkg}}
             </li>
         </ul>
@@ -9,17 +9,15 @@
 </template>
 
 <script>
+import packageMixin from "../mixins/packageMixin";
+
 export default {
     data: function() {
         return {
             packages: ["git", "perl", "perl-base"]
         }
     },
-    methods: {
-        viewPackage: function(packageName) {
-            this.$emit("package-select", packageName);
-        }
-    }
+    mixins: [packageMixin]
 }
 </script>
 

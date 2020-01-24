@@ -1,7 +1,7 @@
 <template>
     <div id="container">
-        <package-list v-on:package-select="showDetails($event)"></package-list>
-        <package-details v-bind:pkg="pkg"></package-details>
+        <package-list v-on:package-request="showDetails($event)"></package-list>
+        <package-details v-on:package-request="showDetails($event)" v-bind:pkg="pkg"></package-details>
     </div>
 </template>
 
@@ -19,8 +19,8 @@ export default {
             pkg: {
                 packageName: "testpkg",
                 description: ["paragraph1", "paragraph2"],
-                dependencies: [{name:"dep1", isInstalled: true}, {name:"dep2", isInstalled: false}],
-                reverseDependencies: ["revdep1", "revdep2"]
+                dependencies: [{name:"dep1", isKnown: true}, {name:"unknowndep", isKnown: false}],
+                reverseDependencies: [{name:"revdep1", isKnown: true}, {name:"revdep2", isKnown: true}]
             }
         }
     },
