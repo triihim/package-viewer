@@ -10,6 +10,9 @@ router.registerRoute(/\/packages[/]?$/, handlers.allPackages);
 // Path: /package?name=<package-name>
 router.registerRoute(/\/package\?name=[\w\.\-\+]*/, handlers.singlePackage);
 
+// Path: any .js file
+router.registerRoute(/\.js$/, handlers.serveJs);
+
 // Path: /
 router.registerRoute(/\/$/, handlers.indexPage);
 
