@@ -1,13 +1,14 @@
+// TODO: Refactor functions.
+
 const fs = require("fs");
 const readline = require("readline");
 
+// TODO: Replace hardcoded path with environment variable.
 const filepath = "./mockdata.real";
 
-function getValue(kvString) {
-    return kvString.split(":")[1].trim();
-}
+const getValue = (kvString) => kvString.split(":")[1].trim();
 
-function readReverseDependencies(packageName) {
+const readReverseDependencies = (packageName) => {
     return new Promise(resolve => {
         const rs = fs.createReadStream(filepath, "utf-8");
         const rl = readline.createInterface(rs);
@@ -30,12 +31,36 @@ function readReverseDependencies(packageName) {
     });
 }
 
-function readPackage(packageName) {
+module.exports.isPackageInstalled = (packageName) => {
+    return new Promise(resolve => {
+        const rs = fs.createReadStream(filepath, "utf-8");
+        const rl = readline.createInterface(rs);
+
+        let exists = false;
+
+        rl.on("line", function(line) {
+            if(line.toLowerCase().startsWith("package")) {
+                let currentPackage = getValue(line);
+                if(currentPackage === packageName) {
+                    exists = true;
+                    rl.close();
+                    rl.removeAllListeners();
+                }
+            } 
+        });
+
+        rl.on("close", function() {
+            resolve(exists);
+        })
+    });
+}
+
+module.exports.readRawPackage = (packageName) => {
     return new Promise((resolve, reject) => {
         const rs = fs.createReadStream(filepath, "utf-8");
         const rl = readline.createInterface(rs);
         let packageFound = false;
-        let package = { name: "", dependencies: [], description: "", reverseDependencies: []};
+        let package = { name: "", dependencies: "", description: "", reverseDependencies: []};
 
         rl.on("line", function(line) {
             // If on package name line. Check if the name matches the searched one.
@@ -78,7 +103,7 @@ function readPackage(packageName) {
     })
 }
 
-function readAllPackageNames() {
+module.exports.readAllPackageNames = () => {
     return new Promise(resolve => {
         const rs = fs.createReadStream(filepath, "utf-8");
         const rl = readline.createInterface(rs);
@@ -95,6 +120,3 @@ function readAllPackageNames() {
         });
     });
 }
-
-module.exports.readAllPackageNames = readAllPackageNames;
-module.exports.readPackage = readPackage;
