@@ -1,16 +1,20 @@
+/**
+ * File: reader.js
+ * Description: Functions handling the reading of the packages file.
+ */
+
 // TODO: Refactor functions.
 
 const fs = require("fs");
 const readline = require("readline");
+const config = require("./config");
 
-// TODO: Replace hardcoded path with environment variable.
-const filepath = "./mockdata.real";
-
+// Returns value from key-value string. E.g. from "key: value" ==> returns "value"
 const getValue = (kvString) => kvString.split(":")[1].trim();
 
 const readReverseDependencies = (packageName) => {
     return new Promise(resolve => {
-        const rs = fs.createReadStream(filepath, "utf-8");
+        const rs = fs.createReadStream(config.FILEPATH, "utf-8");
         const rl = readline.createInterface(rs);
 
         let reverseDependencies = [];
@@ -33,7 +37,7 @@ const readReverseDependencies = (packageName) => {
 
 module.exports.isPackageInstalled = (packageName) => {
     return new Promise(resolve => {
-        const rs = fs.createReadStream(filepath, "utf-8");
+        const rs = fs.createReadStream(config.FILEPATH, "utf-8");
         const rl = readline.createInterface(rs);
 
         let exists = false;
@@ -43,8 +47,8 @@ module.exports.isPackageInstalled = (packageName) => {
                 let currentPackage = getValue(line);
                 if(currentPackage === packageName) {
                     exists = true;
-                    rl.close();
                     rl.removeAllListeners();
+                    rl.close();
                 }
             } 
         });
@@ -57,7 +61,7 @@ module.exports.isPackageInstalled = (packageName) => {
 
 module.exports.readRawPackage = (packageName) => {
     return new Promise((resolve, reject) => {
-        const rs = fs.createReadStream(filepath, "utf-8");
+        const rs = fs.createReadStream(config.FILEPATH, "utf-8");
         const rl = readline.createInterface(rs);
         let packageFound = false;
         let package = { name: "", dependencies: "", description: "", reverseDependencies: []};
@@ -84,28 +88,28 @@ module.exports.readRawPackage = (packageName) => {
                 } else if(line.toLowerCase().startsWith("depends")) {
                     package.dependencies = getValue(line);
                 } else if(line.toLowerCase().startsWith("package")) {
-                    // Different package section started ==> Stop reading.
-                    rl.close();
-                    rl.removeAllListeners();
-
                     readReverseDependencies(packageName)
                     .then(reverseDependencies => {
                         package.reverseDependencies = reverseDependencies;
                         resolve(package);
                     })
+
+                    // Different package section started ==> Stop reading.
+                    rl.removeAllListeners();
+                    rl.close();
                 }
             }
         });
 
-        rl.on("end", function() {
-            reject("Can't find package " + name);
+        rl.on("close", function() {
+            reject("Can't find package " + packageName);
         });
     })
 }
 
 module.exports.readAllPackageNames = () => {
     return new Promise(resolve => {
-        const rs = fs.createReadStream(filepath, "utf-8");
+        const rs = fs.createReadStream(config.FILEPATH, "utf-8");
         const rl = readline.createInterface(rs);
         let names = [];
 

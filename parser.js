@@ -1,7 +1,12 @@
+/**
+ * File: parser.js
+ * Description: Functions for parsing raw data produced by reader.js functions.
+ */
+
 const reader = require("./reader");
 
 const parseDependenciesString = async (dependenciesString) => {
-    
+
     if(dependenciesString.length < 1) return [];
 
     // Drops version numbers. E.g. "dpkg (>=1.15.4)" ==> "dpkg"
@@ -45,11 +50,11 @@ module.exports.readAndParsePackage = async (packageName) => {
     const parsedPackage = {}
 
     let rawPackage = await reader.readRawPackage(packageName);
-
     parsedPackage.name = rawPackage.name;
     parsedPackage.descriptionParagraphs = parseDescriptionString(rawPackage.description);
     parsedPackage.dependencies = await parseDependenciesString(rawPackage.dependencies);
     parsedPackage.reverseDependencies = rawPackage.reverseDependencies;
+    
 
     return parsedPackage;
 }
