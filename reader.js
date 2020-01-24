@@ -3,8 +3,6 @@
  * Description: Functions handling the reading of the packages file.
  */
 
-// TODO: Refactor functions.
-
 const fs = require("fs");
 const readline = require("readline");
 const config = require("./config");
@@ -12,10 +10,14 @@ const config = require("./config");
 // Returns value from key-value string. E.g. from "key: value" ==> returns "value"
 const getValue = (kvString) => kvString.split(":")[1].trim();
 
+const readlineInterface = () => {
+    const rs = fs.createReadStream(config.FILEPATH, "utf-8");
+    return readline.createInterface(rs);
+}
+
 const readReverseDependencies = (packageName) => {
     return new Promise(resolve => {
-        const rs = fs.createReadStream(config.FILEPATH, "utf-8");
-        const rl = readline.createInterface(rs);
+        const rl = readlineInterface();
 
         let reverseDependencies = [];
 
@@ -37,16 +39,15 @@ const readReverseDependencies = (packageName) => {
 
 module.exports.isPackageInstalled = (packageName) => {
     return new Promise(resolve => {
-        const rs = fs.createReadStream(config.FILEPATH, "utf-8");
-        const rl = readline.createInterface(rs);
+        const rl = readlineInterface();
 
-        let exists = false;
+        let isInstalled = false;
 
         rl.on("line", function(line) {
             if(line.toLowerCase().startsWith("package")) {
                 let currentPackage = getValue(line);
                 if(currentPackage === packageName) {
-                    exists = true;
+                    isInstalled = true;
                     rl.removeAllListeners();
                     rl.close();
                 }
@@ -54,15 +55,15 @@ module.exports.isPackageInstalled = (packageName) => {
         });
 
         rl.on("close", function() {
-            resolve(exists);
+            resolve(isInstalled);
         })
     });
 }
 
 module.exports.readRawPackage = (packageName) => {
     return new Promise((resolve, reject) => {
-        const rs = fs.createReadStream(config.FILEPATH, "utf-8");
-        const rl = readline.createInterface(rs);
+        const rl = readlineInterface();
+
         let packageFound = false;
         let package = { name: "", dependencies: "", description: "", reverseDependencies: []};
 
@@ -109,8 +110,7 @@ module.exports.readRawPackage = (packageName) => {
 
 module.exports.readAllPackageNames = () => {
     return new Promise(resolve => {
-        const rs = fs.createReadStream(config.FILEPATH, "utf-8");
-        const rl = readline.createInterface(rs);
+        const rl = readlineInterface();
         let names = [];
 
         rl.on("line", function(line) {
