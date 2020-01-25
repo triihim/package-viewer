@@ -17,15 +17,15 @@ const parseDependenciesString = async (dependenciesString) => {
     
     // Separate all dependencies into an array. 
     // Whether alternative dependency (separated by '|') or regular dependency (separated by ',').
-    let dependencies = dependenciesString.replace("|", ",").split(",");
+    let dependencies = dependenciesString.split("|").join(",").split(",");
 
     // If alternate dependencies. Check which ones are installed.
     if(hasAltDependencies) {
         dependencies = Promise.all(dependencies.map(async d => {
             let name = dropVersionNumber(d);
             return {
-                name: dropVersionNumber(d),
-                isInstalled: await reader.isPackageInstalled(name)
+                name: name,
+                isKnown: await reader.isPackageKnown(name)
             }
         }));
     } else {
@@ -33,7 +33,7 @@ const parseDependenciesString = async (dependenciesString) => {
             let name = dropVersionNumber(d);
             return { 
                 name: name, 
-                isInstalled: true
+                isKnown: true
             };
         })
     }
@@ -50,11 +50,11 @@ module.exports.readAndParsePackage = async (packageName) => {
     const parsedPackage = {}
 
     let rawPackage = await reader.readRawPackage(packageName);
+
     parsedPackage.name = rawPackage.name;
     parsedPackage.descriptionParagraphs = parseDescriptionString(rawPackage.description);
     parsedPackage.dependencies = await parseDependenciesString(rawPackage.dependencies);
     parsedPackage.reverseDependencies = rawPackage.reverseDependencies;
     
-
     return parsedPackage;
 }

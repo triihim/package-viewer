@@ -12,11 +12,7 @@
 import packageMixin from "../mixins/packageMixin";
 
 export default {
-    data: function() {
-        return {
-            packages: ["git", "perl", "perl-base"]
-        }
-    },
+    props: { packages: Array },
     mixins: [packageMixin]
 }
 </script>
@@ -25,6 +21,8 @@ export default {
     #package-list {
         background-color: lightblue;
         flex: 1;
+        height: 80vh;
+        overflow-y: scroll;
     }
     ul {
         padding: 20px;

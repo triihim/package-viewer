@@ -1,13 +1,14 @@
 <template>
     <div id="container">
-        <package-list v-on:package-request="showDetails($event)"></package-list>
-        <package-details v-on:package-request="showDetails($event)" v-bind:pkg="pkg"></package-details>
+        <package-list v-on:package-request="showDetails($event)" v-bind:packages="packages"></package-list>
+        <package-details v-on:package-request="showDetails($event)" v-bind:pkg="selectedPackage"></package-details>
     </div>
 </template>
 
 <script>
 import packageList from "./components/PackageList.vue";
 import packageDetails from "./components/PackageDetails.vue";
+import api from "./api";
 
 export default {
     components: {
@@ -16,18 +17,23 @@ export default {
     },
     data: function() {
         return {
-            pkg: {
-                packageName: "testpkg",
-                description: ["paragraph1", "paragraph2"],
-                dependencies: [{name:"dep1", isKnown: true}, {name:"unknowndep", isKnown: false}],
-                reverseDependencies: [{name:"revdep1", isKnown: true}, {name:"revdep2", isKnown: true}]
-            }
+            packages: [],
+            selectedPackage: {}
         }
     },
     methods: {
         showDetails: function(packageName) {
-            this.pkg.packageName = packageName;
+            api.getPackage(packageName)
+                .then(response => {
+                    this.selectedPackage = response.data;
+                });
         }
+    },
+    created: function() {
+        api.getPackageNames()
+            .then(response => {
+                this.packages = response.data;
+            });
     }
 }
 </script>

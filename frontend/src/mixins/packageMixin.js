@@ -1,7 +1,12 @@
+import api from "../api";
+
 export default {
     methods: {
         requestPackageDetails: function(packageName) {
-            this.$emit("package-request", packageName);
+            api.getPackage(packageName).then(p => {
+                console.log(p);
+                this.$emit("package-request", packageName);
+            })
         }
     }
 }

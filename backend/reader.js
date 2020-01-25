@@ -23,10 +23,16 @@ const readReverseDependencies = (packageName) => {
 
         let checkedPackage = "";
         rl.on("line", function(line) {
+
             line = line.toLowerCase();
+
             if(line.startsWith("package")) {
+
                 checkedPackage = getValue(line);
-            } else if(line.startsWith("depends") && line.indexOf(` ${packageName} `) > -1) {
+
+            // Check if "depedends"-field contains the package name. 
+            // Regex matches name in the first position (Depends: <packageName>) or further down the list (Depends: ... , <packageName>)
+            } else if(line.startsWith("depends") && line.search(new RegExp(`[:|,] ${packageName}(,|$)`)) > -1) {
                 reverseDependencies.push(checkedPackage);
             }
         });
@@ -37,25 +43,26 @@ const readReverseDependencies = (packageName) => {
     });
 }
 
-module.exports.isPackageInstalled = (packageName) => {
+module.exports.isPackageKnown = (packageName) => {
     return new Promise(resolve => {
         const rl = readlineInterface();
 
-        let isInstalled = false;
+        let isKnown = false;
 
         rl.on("line", function(line) {
             if(line.toLowerCase().startsWith("package")) {
                 let currentPackage = getValue(line);
                 if(currentPackage === packageName) {
-                    isInstalled = true;
+                    isKnown = true;
                     rl.removeAllListeners();
                     rl.close();
+                    resolve(isKnown);
                 }
             } 
         });
 
         rl.on("close", function() {
-            resolve(isInstalled);
+            resolve(isKnown);
         })
     });
 }
@@ -82,20 +89,27 @@ module.exports.readRawPackage = (packageName) => {
 
                 // Don't lowercase line, when working with description field.
                 if(line.startsWith("description") || line.startsWith("Description")) {
+
                     package.description = getValue(line);
+
                 } else if(line.indexOf(" ") === 0 && package.description) {
+
                     // Description field starts with "description" key and can span multiple lines of which each begins with a space.
                     package.description += line;
+
                 } else if(line.toLowerCase().startsWith("depends")) {
+
                     package.dependencies = getValue(line);
+
                 } else if(line.toLowerCase().startsWith("package")) {
+
+                    // Different package section started => No need to read further. Next find reverse dependencies.
                     readReverseDependencies(packageName)
                     .then(reverseDependencies => {
                         package.reverseDependencies = reverseDependencies;
                         resolve(package);
                     })
 
-                    // Different package section started ==> Stop reading.
                     rl.removeAllListeners();
                     rl.close();
                 }

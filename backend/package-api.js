@@ -9,8 +9,8 @@ const reader = require("./reader");
  module.exports = {
     
     getPackageNames: async () => {
-        let packageNames = await reader.readAllPackageNames();
-        return packageNames.sort();
+        let packageNamesArray = await reader.readAllPackageNames();
+        return packageNamesArray.sort();
     },
 
     getPackage: async (name) => {
