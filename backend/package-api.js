@@ -3,7 +3,6 @@
  * Description: API functions for fetching package data.
  */
 
-const parser = require("./parser");
 const reader = require("./reader");
 
  module.exports = {
@@ -14,7 +13,7 @@ const reader = require("./reader");
     },
 
     getPackage: async (name) => {
-        return await parser.readAndParsePackage(name);
+        return await reader.readPackage(name);
     }
 
  }

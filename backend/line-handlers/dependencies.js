@@ -1,15 +1,11 @@
-/**
- * File: parser.js
- * Description: Functions for parsing raw data produced by reader.js functions.
- */
-
-const reader = require("./reader");
+const reader = require("../reader");
+const readUtils = require("../reader-utils");
 
 const parseDependenciesString = async (dependenciesString) => {
 
     if(dependenciesString.length < 1) return [];
 
-    // Drops version numbers. E.g. "dpkg (>=1.15.4)" ==> "dpkg"
+    // Drops version numbers. E.g. "pkg (>=1.15.4)" ==> "pkg"
     const dropVersionNumber = (name) => name.trim().split(" ")[0];
 
     // Alternative dependencies are separated by '|'.
@@ -19,8 +15,8 @@ const parseDependenciesString = async (dependenciesString) => {
     // Whether alternative dependency (separated by '|') or regular dependency (separated by ',').
     let dependencies = dependenciesString.split("|").join(",").split(",");
 
-    // If alternate dependencies. Check which ones are installed.
     if(hasAltDependencies) {
+        // If alternate dependencies. Check which ones are known.
         dependencies = Promise.all(dependencies.map(async d => {
             let name = dropVersionNumber(d);
             return {
@@ -28,7 +24,9 @@ const parseDependenciesString = async (dependenciesString) => {
                 isKnown: await reader.isPackageKnown(name)
             }
         }));
+
     } else {
+        // If there are no alternate dependencies we can assume all dependencies are known.
         dependencies = dependencies.map(d => {
             let name = dropVersionNumber(d);
             return { 
@@ -41,20 +39,12 @@ const parseDependenciesString = async (dependenciesString) => {
     return dependencies;
 }
 
-const parseDescriptionString = (descriptionString) => {
-    // Description field paragraphs are separated by " . "
-    return descriptionString.split(" . ");
+const dependenciesLineHandler = async (pkg, line) => {
+    const property = "dependencies";
+    const dependenciesString = readUtils.getValue(line);
+    let dependencies = await parseDependenciesString(dependenciesString);
+    pkg[property] = dependencies;
+    return pkg;
 }
 
-module.exports.readAndParsePackage = async (packageName) => {
-    const parsedPackage = {}
-
-    let rawPackage = await reader.readRawPackage(packageName);
-
-    parsedPackage.name = rawPackage.name;
-    parsedPackage.descriptionParagraphs = parseDescriptionString(rawPackage.description);
-    parsedPackage.dependencies = await parseDependenciesString(rawPackage.dependencies);
-    parsedPackage.reverseDependencies = rawPackage.reverseDependencies;
-    
-    return parsedPackage;
-}
+module.exports = dependenciesLineHandler;

@@ -15,6 +15,7 @@ module.exports.registerRoute = (pattern, handler) => {
 module.exports.route = (req, res) => {
     let route = routes.find(route => req.url.toLowerCase().match(route.pattern));
 
+    // TODO: More elegant solution
     res.setHeader("Access-Control-Allow-Origin", "*");
 
     if(route) {

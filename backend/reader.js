@@ -1,139 +1,104 @@
-/**
- * File: reader.js
- * Description: Functions handling the reading of the packages file.
- */
-
 const fs = require("fs");
 const readline = require("readline");
 const config = require("./config");
+const lineHandler = require("./line-handler");
+const isPackageStartLine = require("./reader-utils").isPackageStartLine;
+const isSearchedPackage = require("./reader-utils").isSearchedPackage;
+const getValue = require("./reader-utils").getValue;
 
-// Returns value from key-value string. E.g. from "key: value" ==> returns "value"
-const getValue = (kvString) => kvString.split(":")[1].trim();
+const readPackage = async (packageName) => {
 
-const readlineInterface = () => {
-    const rs = fs.createReadStream(config.FILEPATH, "utf-8");
-    return readline.createInterface(rs);
-}
+    const callLineHandler = async (pkg, line) => {
+        let lh = lineHandler.getLineHandler(line);
+        if(lh) return lh.handler(pkg, line);
+    }
 
-const readReverseDependencies = (packageName) => {
-    return new Promise(resolve => {
-        const rl = readlineInterface();
+    return new Promise(async (resolve, reject) => {
+        const rs = fs.createReadStream(config.FILEPATH, "utf-8");
+        const rl = readline.createInterface(rs);
 
-        let reverseDependencies = [];
+        const pkg = {};
 
-        let checkedPackage = "";
-        rl.on("line", function(line) {
+        // Flag to track whether or not we've found the package.
+        let pkgFound = false;
 
-            line = line.toLowerCase();
+        const promises = [];
 
-            if(line.startsWith("package")) {
+        rl.on("line", line => {
 
-                checkedPackage = getValue(line);
+            if(!pkgFound && isPackageStartLine(line) && isSearchedPackage(line, packageName)) {
+                // Line starting the searched package section.
+                promises.push(callLineHandler(pkg, line));
+                pkgFound = true;
 
-            // Check if "depedends"-field contains the package name. 
-            // Regex matches name in the first position (Depends: <packageName>) 
-            // or further down the list (Depends: ... , <packageName> [(version)]])
-            } else if(line.startsWith("depends") && line.search(new RegExp(`[:|,] ${packageName}(,|$| \())`)) > -1) {
-                reverseDependencies.push(checkedPackage);
+            } else if(pkgFound && isPackageStartLine(line)) {
+                // Line starting another package section ==> Stop reading.
+                pkgFound = false;
+                rl.close();
+                rs.close();
+
+            } else if(pkgFound) {
+                promises.push(callLineHandler(pkg, line));
             }
+            
         });
 
-        rl.on("close", function() {
-            resolve(reverseDependencies);
-        })
+        rl.on("close", () => {
+            Promise.all(promises)
+            .then(() => {
+                if(pkg.name) resolve(pkg);
+                else reject("Package " + packageName + " not found");
+            })
+            .catch(err => {
+                console.log(err);
+            })
+        });
+
+    });  
+}
+
+const readAllPackageNames = () => {
+    return new Promise(resolve => {
+        const rs = fs.createReadStream(config.FILEPATH, "utf-8");
+        const rl = readline.createInterface(rs);
+
+        let names = [];
+
+        rl.on("line", line => {
+            if(isPackageStartLine(line)) {
+                names.push(getValue(line));
+            };
+        });
+
+        rl.on("close", () => {
+            resolve(names);
+        });
     });
 }
 
-module.exports.isPackageKnown = (packageName) => {
+const isPackageKnown = (packageName) => {
     return new Promise(resolve => {
-        const rl = readlineInterface();
+        const rs = fs.createReadStream(config.FILEPATH, "utf-8");
+        const rl = readline.createInterface(rs);
 
-        rl.on("line", function(line) {
+        rl.on("line", line => {
             if(line.toLowerCase().startsWith("package")) {
                 let currentPackage = getValue(line);
                 if(currentPackage === packageName) {
                     rl.removeAllListeners();
                     rl.close();
+                    rs.close();
                     resolve(true);
                 }
             } 
         });
 
-        rl.on("close", function() {
+        rl.on("close", () => {
             resolve(false);
         })
     });
 }
 
-module.exports.readRawPackage = (packageName) => {
-    return new Promise((resolve, reject) => {
-        const rl = readlineInterface();
-
-        // Flag to tell, if lines being read belong to the wanted package.
-        let packageFound = false; 
-
-        let package = { name: "", dependencies: "", description: "", reverseDependencies: []};
-
-        rl.on("line", function(line) {
-            // If on package name line and wanted package not yet found. Check if the name matches the searched one.
-            if(line.toLowerCase().startsWith("package") && packageFound === false) {
-
-                let readPackageName = getValue(line);
-                if(packageName.toLowerCase() === readPackageName) {
-                    packageFound = true;
-                    package.name = readPackageName;
-                }
-
-            } else if(packageFound) {
-
-                // Don't lowercase line, when working with description field.
-                if(line.startsWith("description") || line.startsWith("Description")) {
-
-                    package.description = getValue(line);
-
-                // Description field starts with "description" key but can span multiple lines of which each begins with a space.
-                } else if(line.indexOf(" ") === 0 && package.description) {
-                    
-                    package.description += line;
-
-                } else if(line.toLowerCase().startsWith("depends")) {
-
-                    package.dependencies = getValue(line);
-
-                } else if(line.toLowerCase().startsWith("package")) {
-
-                    // Different package section started => No need to read further. Next find reverse dependencies.
-                    readReverseDependencies(packageName)
-                    .then(reverseDependencies => {
-                        package.reverseDependencies = reverseDependencies;
-                        resolve(package);
-                    })
-
-                    rl.removeAllListeners();
-                    rl.close();
-                }
-            }
-        });
-
-        rl.on("close", function() {
-            reject("Can't find package " + packageName);
-        });
-    })
-}
-
-module.exports.readAllPackageNames = () => {
-    return new Promise(resolve => {
-        const rl = readlineInterface();
-        let names = [];
-
-        rl.on("line", function(line) {
-            if(line.toLowerCase().indexOf("package") === 0) {
-                names.push(getValue(line));
-            };
-        });
-
-        rl.on("close", function() {
-            resolve(names);
-        });
-    });
-}
+module.exports.readPackage = readPackage;
+module.exports.readAllPackageNames = readAllPackageNames;
+module.exports.isPackageKnown = isPackageKnown;
