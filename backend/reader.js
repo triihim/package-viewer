@@ -31,8 +31,9 @@ const readReverseDependencies = (packageName) => {
                 checkedPackage = getValue(line);
 
             // Check if "depedends"-field contains the package name. 
-            // Regex matches name in the first position (Depends: <packageName>) or further down the list (Depends: ... , <packageName>)
-            } else if(line.startsWith("depends") && line.search(new RegExp(`[:|,] ${packageName}(,|$)`)) > -1) {
+            // Regex matches name in the first position (Depends: <packageName>) 
+            // or further down the list (Depends: ... , <packageName> [(version)]])
+            } else if(line.startsWith("depends") && line.search(new RegExp(`[:|,] ${packageName}(,|$| \())`)) > -1) {
                 reverseDependencies.push(checkedPackage);
             }
         });
@@ -47,22 +48,19 @@ module.exports.isPackageKnown = (packageName) => {
     return new Promise(resolve => {
         const rl = readlineInterface();
 
-        let isKnown = false;
-
         rl.on("line", function(line) {
             if(line.toLowerCase().startsWith("package")) {
                 let currentPackage = getValue(line);
                 if(currentPackage === packageName) {
-                    isKnown = true;
                     rl.removeAllListeners();
                     rl.close();
-                    resolve(isKnown);
+                    resolve(true);
                 }
             } 
         });
 
         rl.on("close", function() {
-            resolve(isKnown);
+            resolve(false);
         })
     });
 }
@@ -71,16 +69,17 @@ module.exports.readRawPackage = (packageName) => {
     return new Promise((resolve, reject) => {
         const rl = readlineInterface();
 
-        let packageFound = false;
+        // Flag to tell, if lines being read belong to the wanted package.
+        let packageFound = false; 
+
         let package = { name: "", dependencies: "", description: "", reverseDependencies: []};
 
         rl.on("line", function(line) {
-            // If on package name line. Check if the name matches the searched one.
-            if(line.toLowerCase().startsWith("package") && !packageFound) {
+            // If on package name line and wanted package not yet found. Check if the name matches the searched one.
+            if(line.toLowerCase().startsWith("package") && packageFound === false) {
 
                 let readPackageName = getValue(line);
                 if(packageName.toLowerCase() === readPackageName) {
-                    // If the package is found, the following lines contain more package details.
                     packageFound = true;
                     package.name = readPackageName;
                 }
@@ -92,9 +91,9 @@ module.exports.readRawPackage = (packageName) => {
 
                     package.description = getValue(line);
 
+                // Description field starts with "description" key but can span multiple lines of which each begins with a space.
                 } else if(line.indexOf(" ") === 0 && package.description) {
-
-                    // Description field starts with "description" key and can span multiple lines of which each begins with a space.
+                    
                     package.description += line;
 
                 } else if(line.toLowerCase().startsWith("depends")) {

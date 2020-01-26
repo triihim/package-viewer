@@ -24,7 +24,9 @@ export default {
     props: {
         pkg: Object
     },
-    mixins: [packageMixin]
+    mixins: [
+        packageMixin
+    ]
 }
 </script>
 
@@ -33,9 +35,11 @@ export default {
         flex: 2;
         background-color: lightcoral;
         padding: 20px;
+        overflow-y: scroll;
     }
     .clickable {
         color: blue;
+        cursor: pointer;
     }
     h2, h3, p {
         margin: 10px 0;
