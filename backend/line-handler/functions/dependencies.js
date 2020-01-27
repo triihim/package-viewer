@@ -1,3 +1,8 @@
+/**
+ * File: dependencies.js
+ * Description: Line handler function for package dependencies field. Gets called when the reader hits the depends line.
+ */
+
 const reader = require("../../reader/reader");
 const readUtils = require("../../reader/reader-utils");
 

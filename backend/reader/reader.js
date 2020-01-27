@@ -1,3 +1,8 @@
+/**
+ * File: reader.js
+ * Description: Functions that read the packages file directly.
+ */
+
 const fs = require("fs");
 const readline = require("readline");
 const config = require("../config");

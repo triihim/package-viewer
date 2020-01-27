@@ -1,3 +1,8 @@
+/**
+ * File: description.js
+ * Description: Line handler function for package description field. Gets called when the reader hits the description line.
+ */
+
 const readUtils = require("../../reader/reader-utils");
 
 const descriptionLineHandler = async (pkg, line) => {

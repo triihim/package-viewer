@@ -1,3 +1,8 @@
+/**
+ * File: reader-utils.js
+ * Description: Common utility functions used when reading packages file.
+ */
+
 module.exports = {
 
     getValue: keyValueString => {

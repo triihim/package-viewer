@@ -1,6 +1,6 @@
 /**
  * File: router.js
- * Description: Simple router to keep app.js tidy.
+ * Description: Simple router.
  */
 
 const routes = [];

@@ -1,3 +1,8 @@
+/**
+ * File: package.js
+ * Description: Line handler function for "Package" field. Gets called when the reader hits the "Package"- line.
+ */
+
 const fs = require("fs");
 const readline = require("readline");
 const readUtils = require("../../reader/reader-utils");
