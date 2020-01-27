@@ -22,8 +22,10 @@ const server = http.createServer((req, res) => {
  
     // Simple cors setup.
     let origin = req.headers.origin;
-    if(config.ALLOWED_ORIGINS.find(o => o.match(origin)) !== null){
+    if(config.ALLOWED_ORIGINS.find(o => o.match(origin)) != null){
         res.setHeader("Access-Control-Allow-Origin", origin);
+    } else {
+        res.setHeader("Access-Control-Allow-Origin", "");
     }
     res.setHeader("Access-Control-Allow-Methods", "GET, OPTIONS");
     res.setHeader("Access-Control-Allow-Headers", "*");
