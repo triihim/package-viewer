@@ -1,5 +1,5 @@
-const reader = require("../reader");
-const readUtils = require("../reader-utils");
+const reader = require("../../reader/reader");
+const readUtils = require("../../reader/reader-utils");
 
 const parseDependenciesString = async (dependenciesString) => {
 

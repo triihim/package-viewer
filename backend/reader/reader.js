@@ -1,7 +1,7 @@
 const fs = require("fs");
 const readline = require("readline");
-const config = require("./config");
-const lineHandler = require("./line-handler");
+const config = require("../config");
+const lineHandler = require("../line-handler/line-handler");
 const isPackageStartLine = require("./reader-utils").isPackageStartLine;
 const isSearchedPackage = require("./reader-utils").isSearchedPackage;
 const getValue = require("./reader-utils").getValue;
@@ -38,6 +38,7 @@ const readPackage = async (packageName) => {
                 rs.close();
 
             } else if(pkgFound) {
+                // Line belongs to the searched package.
                 promises.push(callLineHandler(pkg, line));
             }
             

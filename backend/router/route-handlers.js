@@ -3,9 +3,9 @@
  * Description: Routes / route handlers to be registered to the router.
  */
 
-const packageApi = require("./package-api");
+const packageApi = require("../package-api");
 const fs = require("fs");
-const config = require("./config");
+const config = require("../config");
 
 module.exports.notFound = (req, res) => {
     res.setHeader("Content-Type", "text/plain");

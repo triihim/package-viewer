@@ -1,7 +1,7 @@
 const fs = require("fs");
 const readline = require("readline");
-const readUtils = require("../reader-utils");
-const config = require("../config");
+const readUtils = require("../../reader/reader-utils");
+const config = require("../../config");
 
 const findReverseDependencies = async packageName => {
     return new Promise(resolve => {

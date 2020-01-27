@@ -3,7 +3,7 @@
  * Description: API functions for fetching package data.
  */
 
-const reader = require("./reader");
+const reader = require("./reader/reader");
 
  module.exports = {
     

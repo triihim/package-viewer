@@ -1,13 +1,14 @@
 const http = require("http");
-const router = require("./router");
-const handlers = require("./route-handlers");
+const router = require("./router/router");
+const handlers = require("./router/route-handlers");
 
 const port = process.env.PORT || 3000;
 
 // Path: /packages
 router.registerRoute(/\/packages[/]?$/, handlers.allPackages);
 
-// Path: /package?name=<package-name>
+// Path: /package?name=<package-name>. 
+// Package name can contain alphanumeric and some special characters.
 router.registerRoute(/\/package\?name=[\w\.\-\+]*/, handlers.singlePackage);
 
 // Path: any .js file

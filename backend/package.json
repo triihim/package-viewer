@@ -2,7 +2,7 @@
   "name": "dpkg-status-backend",
   "version": "1.0.0",
   "description": "Zero dependency Node.js application to read package data from /var/lib/dpkg/status in Debian and Ubuntu machines",
-  "main": "index.js",
+  "main": "app.js",
   "scripts": {
     "start": "node app"
   },
