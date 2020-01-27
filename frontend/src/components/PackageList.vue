@@ -56,4 +56,7 @@ export default {
         padding: 10px;
         border: none;
     }
+    p {
+        padding: 5px;
+    }
 </style>
