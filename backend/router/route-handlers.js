@@ -15,7 +15,8 @@ module.exports.notFound = (req, res) => {
 
 module.exports.indexPage = (req, res) => {
     res.setHeader("Content-Type", "text/html");
-    fs.readFile(config.STATIC_PATH + "/index.html", (err, html) => {
+    console.log(config.DIST_PATH);
+    fs.readFile(config.DIST_PATH + "/index.html", (err, html) => {
         if(err) {
             module.exports.notFound(req, res);
         } else {
@@ -29,7 +30,7 @@ module.exports.serveJs = (req, res) => {
     const requestedJsFile = req.url.match(/[\w]*\.js$/)[0];
 
     res.setHeader("Content-Type", "application/javascript");
-    fs.readFile(config.STATIC_PATH + "/" + requestedJsFile, (err, js) => {
+    fs.readFile(config.DIST_PATH + "/" + requestedJsFile, (err, js) => {
         if(err) {
             module.exports.notFound(req, res);
         } else {
