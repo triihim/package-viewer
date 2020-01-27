@@ -55,15 +55,13 @@ export default {
 <style scoped>
 
     #wrapper {
-        display: flex;
-        flex-direction: column;
-        width: 100%;
+        width: 95%;
         margin: 0 auto;
         transition-duration: .2s;
     }
     #content {
         display: flex;
-        width: 100%;
+        height: 80vh;
     }
     @media only screen and (min-width: 1100px) {
         #wrapper {

@@ -6,10 +6,7 @@ html, body {
     width: 100%;
 }
 
-header, footer {
-    height: 10vh;
+body, input {
+    font-family: monospace;
 }
 
-main {
-    height: 80vh;
-}

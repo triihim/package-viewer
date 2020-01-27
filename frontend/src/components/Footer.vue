@@ -1,17 +1,19 @@
 <template>
     <footer>
-        Package Viewer
+        github
     </footer>
 </template>
 
 <script>
 export default {
-    
+
 }
 </script>
 
 <style scoped>
     footer {
-        background-color: green;
+        border-top: 3px solid #706C61;
+        text-align: center;
+        padding-top: 10px;
     }
 </style>

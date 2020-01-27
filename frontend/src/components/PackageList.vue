@@ -36,19 +36,22 @@ export default {
     #package-list {
         display: flex;
         flex-direction: column;
-        background-color: lightblue;
+        background-color: #E1F4F3;
         flex: 1;
         overflow-y: scroll;
     }
     li {
-        font-size: 1.2rem;
-        padding: 10px;
+        font-size: 1.1rem;
+        padding: 5px 10px;
         cursor: pointer;
     }
     li:hover {
-        background-color: lightskyblue;
+        background-color: #333;
+        color: #eee;
     }
     input {
+        font-size: 1.1rem;
         padding: 10px;
+        border: none;
     }
 </style>
