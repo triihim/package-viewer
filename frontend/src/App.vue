@@ -45,6 +45,7 @@ export default {
             api.getPackage(packageName)
                 .then(response => {
                     this.selectedPackage = response.data;
+                    this.error = "";
                 })
                 .catch(err => {
                     // TODO: Handle error
@@ -60,6 +61,7 @@ export default {
         api.getPackageNames()
             .then(response => {
                 this.packages = response.data;
+                this.error = "";
             })
             .catch(err => {
                 // TODO: Handle error
