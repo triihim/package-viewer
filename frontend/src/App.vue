@@ -2,8 +2,12 @@
     <div id="wrapper">
         <app-header></app-header>
         <main id="content">
-            <package-list v-on:package-request="showDetails($event)" v-bind:packages="packages"></package-list>
-            <package-details v-on:package-request="showDetails($event)" v-bind:pkg="selectedPackage"></package-details>
+            <package-list v-on:package-request="showDetails($event)" 
+                v-bind:packages="packages"
+                v-bind:loading="loadingPackages"></package-list>
+            <package-details v-on:package-request="showDetails($event)" 
+                v-bind:pkg="selectedPackage"
+                v-bind:loading="loadingDetails"></package-details>
         </main>
         <app-footer></app-footer>
     </div>
@@ -26,14 +30,18 @@ export default {
     data: function() {
         return {
             packages: [],
-            selectedPackage: {}
+            selectedPackage: {},
+            loadingPackages: false,
+            loadingDetails: false
         }
     },
     methods: {
         showDetails: function(packageName) {
+            this.loadingDetails = true;
             api.getPackage(packageName)
                 .then(response => {
                     this.selectedPackage = response.data;
+                    this.loadingDetails = false;
                 })
                 .catch(err => {
                     // TODO: Handle error
@@ -41,9 +49,11 @@ export default {
         }
     },
     created: function() {
+        this.loadingPackages = true;
         api.getPackageNames()
             .then(response => {
                 this.packages = response.data;
+                this.loadingPackages = false;
             })
             .catch(err => {
                 // TODO: Handle error

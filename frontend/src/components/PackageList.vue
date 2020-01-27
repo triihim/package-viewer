@@ -1,7 +1,8 @@
 <template>
     <div id="package-list">
         <input type="text" placeholder="Search" v-model="search">
-        <ul>
+        <p v-if="loading">Loading...</p>
+        <ul v-if="!loading">
             <li v-for="(pkg, i) in filteredPackages" v-bind:key="i" v-on:click="requestPackageDetails(pkg)">
                 {{pkg}}
             </li>
@@ -14,7 +15,8 @@ import packageMixin from "../mixins/packageMixin";
 
 export default {
     props: { 
-        packages: Array 
+        packages: Array,
+        loading: Boolean
     },
     data: function() {
         return {
