@@ -1,0 +1,21 @@
+{
+  "name": "package-viewer",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "install": "(cd frontend && npm i && npm i --only=dev)",
+    "heroku-postbuild": "cd frontend && npm run build && mv dist ../backend",
+    "start": "cd backend && npm start"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/triihim/package-viewer.git"
+  },
+  "author": "Tatu Riihimäki",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/triihim/package-viewer/issues"
+  },
+  "homepage": "https://github.com/triihim/package-viewer#readme"
+}
