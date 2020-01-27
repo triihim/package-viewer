@@ -15,22 +15,25 @@ const parseDependenciesString = async (dependenciesString) => {
     // Whether alternative dependency (separated by '|') or regular dependency (separated by ',').
     let dependencies = dependenciesString.split("|").join(",").split(",");
 
+    // Drop version numbers and remove resulting duplicates.
+    // E.g. "python (>= 2.7.1), python (<< 2.8)" parses into "[python, python]" without filtering.
+    dependencies = dependencies.map(d => dropVersionNumber(d));
+    dependencies = dependencies.filter((name, pos) => dependencies.indexOf(name) === pos);
+
     if(hasAltDependencies) {
         // If alternate dependencies. Check which ones are known.
         dependencies = Promise.all(dependencies.map(async d => {
-            let name = dropVersionNumber(d);
             return {
-                name: name,
-                isKnown: await reader.isPackageKnown(name)
+                name: d,
+                isKnown: await reader.isPackageKnown(d)
             }
         }));
 
     } else {
         // If there are no alternate dependencies we can assume all dependencies are known.
         dependencies = dependencies.map(d => {
-            let name = dropVersionNumber(d);
             return { 
-                name: name, 
+                name: d, 
                 isKnown: true
             };
         })
