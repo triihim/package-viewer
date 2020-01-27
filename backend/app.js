@@ -19,16 +19,8 @@ router.registerRoute(/\.js$/, handlers.serveJs);
 router.registerRoute(/\/$/, handlers.indexPage);
 
 const server = http.createServer((req, res) => {
- 
-    // Simple cors setup.
-    let origin = req.headers.origin;
-    if(config.ALLOWED_ORIGINS.find(o => o.match(origin)) != null){
-        res.setHeader("Access-Control-Allow-Origin", origin);
-    } 
+    res.setHeader("Access-Control-Allow-Origin", "*");
     res.setHeader("Access-Control-Allow-Methods", "GET, OPTIONS");
-    res.setHeader("Access-Control-Allow-Headers", "*");
-
-    // Route the request.
     router.route(req, res)
 });
 
