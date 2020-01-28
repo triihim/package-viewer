@@ -48,7 +48,6 @@ export default {
                     this.error = "";
                 })
                 .catch(err => {
-                    // TODO: Handle error
                     this.error = "Failed to fetch details for package " + packageName;
                 })
                 .finally(() => {
@@ -64,7 +63,6 @@ export default {
                 this.error = "";
             })
             .catch(err => {
-                // TODO: Handle error
                 this.error = "Failed to fetch packages";
             })
             .finally(() => {

@@ -19,8 +19,17 @@ router.registerRoute(/\.js$/, handlers.serveJs);
 router.registerRoute(/\/$/, handlers.indexPage);
 
 const server = http.createServer((req, res) => {
-    res.setHeader("Access-Control-Allow-Origin", "*");
+
+    let origin = req.headers.origin;
+    const allowedOrigins = config.ALLOWD_ORIGINS.split(",");
+
+    allowedOrigins.forEach(o => {
+        if(o.startsWith(origin)) {
+            res.setHeader("Access-Control-Allow-Origin", origin);
+        }
+    })
     res.setHeader("Access-Control-Allow-Methods", "GET, OPTIONS");
+    
     router.route(req, res)
 });
 
