@@ -40,6 +40,8 @@ export default {
         flex-direction: column;
         background-color: #E1F4F3;
         flex: 1;
+    }
+    ul {
         overflow-y: scroll;
     }
     li {
@@ -55,6 +57,9 @@ export default {
         font-size: 1.1rem;
         padding: 10px;
         border: none;
+    }
+    input:focus {
+        outline: none;
     }
     p {
         padding: 5px;

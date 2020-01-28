@@ -75,13 +75,17 @@ export default {
 <style scoped>
 
     #wrapper {
+        height: 100vh;
+        display: flex;
+        flex-direction: column;        
         width: 95%;
         margin: 0 auto;
         transition-duration: .2s;
     }
     #content {
+        overflow: hidden;
         display: flex;
-        height: 80vh;
+        flex: 1;
     }
     @media only screen and (min-width: 1100px) {
         #wrapper {
