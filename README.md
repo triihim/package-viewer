@@ -1,5 +1,5 @@
 # Package viewer
-## [Test in Heroku]([https://pkg-viewer.herokuapp.com/)
+**[Test in Heroku](https://pkg-viewer.herokuapp.com/)**
 
 The project consists of two separate projects: the frontend and the backend. There is a shared top level package.json, but it is there only to enable deployment of two projects under single Heroku app.
 
