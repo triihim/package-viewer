@@ -9,7 +9,7 @@ export default {
     },
 
     getPackage: function(packageName) {
-        return axios.get(base_url + "/package?name=" + packageName);
+        return axios.get(base_url + "/package/" + packageName);
     }
 
 }
