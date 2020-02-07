@@ -6,7 +6,7 @@
   "scripts": {
     "install": "cd frontend && npm i && npm i --only=dev",
     "heroku-postbuild": "cd frontend && npm run build && mv dist ../backend",
-    "start": "cd backend && npm start"
+    "start": "cd backend && npm i && npm start"
   },
   "repository": {
     "type": "git",
