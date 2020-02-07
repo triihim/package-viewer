@@ -1,7 +1,7 @@
 const fs = require("fs");
 const readline = require("readline")
 
-const filepath = "./mockdata.real";
+const filepath = require("./config").PACKAGES_FILEPATH;
 
 
 const isPackageStartLine = line => line.toLowerCase().startsWith("package:");
@@ -42,23 +42,6 @@ const readAllPackageNames = () => {
     })
 }
 
-
-const addPackageKnownProperty = namesArray => {
-    return new Promise((resolve, reject) => {
-        readAllPackageNames()
-        .then(names => {
-            let results = namesArray.map(n => {
-                let isKnown = names.indexOf(n) > -1;
-                return { name: n, isKnown: isKnown}
-            })
-            resolve(results)
-        })
-        .catch(err => {
-            reject(err);
-        })
-    })
-}
-
 const readPackage = name => {
     return new Promise((resolve, reject) => {
         const rs = fs.createReadStream(filepath, { encoding:"utf8", highWaterMark: 8*1024 });
@@ -71,12 +54,14 @@ const readPackage = name => {
             reverseDependencies: []
         };
 
+        const allPackageNames = [];
         let currentPackage = "";
         let doReadFlag = false;
 
         rl.on("line", line => {
             if(isPackageStartLine(line)) {
                 currentPackage = getKvValue(line);
+                allPackageNames.push(currentPackage);
                 doReadFlag = isSearchedPackage(line, name);
             }
             if(doReadFlag) {
@@ -105,14 +90,11 @@ const readPackage = name => {
                 pkg.dependencies = pkg.dependencies.map(d => d.trim().split(" ")[0]);
 
                 // Add isKnown property to the dependencies to differentiate between known and not known packages.
-                addPackageKnownProperty(pkg.dependencies)
-                .then(dependencies => {
-                    pkg.dependencies = dependencies;
-                    resolve(pkg);
-                })
-                .catch(err => {
-                    reject(err);
-                })
+                pkg.dependencies = pkg.dependencies.map(n => {
+                    return {name: n, isKnown: allPackageNames.indexOf(n) > -1};
+                });
+
+                resolve(pkg);
 
             } else {
                 // Turn empty string into an empty array for consistency.
