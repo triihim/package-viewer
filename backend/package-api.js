@@ -1,15 +1,10 @@
-/**
- * File: packages-api.js
- * Description: API functions for fetching package data.
- */
-
-const reader = require("./reader/reader");
+const reader = require("./reader");
 
  module.exports = {
     
     getPackageNames: async () => {
-        let packageNamesArray = await reader.readAllPackageNames();
-        return packageNamesArray.sort();
+        let packageNames = await reader.readAllPackageNames();
+        return packageNames.sort();
     },
 
     getPackage: async (name) => {
@@ -17,4 +12,3 @@ const reader = require("./reader/reader");
     }
 
  }
-

@@ -1,38 +1,47 @@
-const http = require("http");
-const router = require("./router/router");
-const handlers = require("./router/route-handlers");
-const config = require("./config");
+const express = require("express");
+const app = express();
+const packages = require("./package-api");
 
-const port = process.env.PORT || 3000;
+app.use((req, res, next) => {
+    // Client runs in port 8080 in dev mode.
+    res.setHeader("Access-Control-Allow-Origin", "http://localhost:8080");
+    if(req.method === "OPTIONS") {
+        res.setHeader("Access-Control-Allow-Methods", "GET")
+    }
+    next();
+});
 
-// Path: /packages
-router.registerRoute(/\/packages[/]?$/, handlers.allPackages);
+// For Heroku, where client and server can't be deployed separately under single hobby dyno.
+app.use(express.static("dist"));
 
-// Path: /package?name=<package-name>. 
-// Package name can contain alphanumeric and some special characters.
-router.registerRoute(/\/package\?name=[\w\.\-\+]*/, handlers.singlePackage);
+// For Heroku
+app.get("/", (req, res) => {
+    res.status(200).send("index.html");
+});
 
-// Path: any .js file
-router.registerRoute(/\.js$/, handlers.serveJs);
+app.get("/api/packages", async (req, res) => {
+    try {
+        const packageNames = await packages.getPackageNames();
+        res.status(200).json(packageNames);
+    } catch(e) {
+        console.log(e);
+        res.status(500).send();
+    }
+});
 
-// Path: /
-router.registerRoute(/\/$/, handlers.indexPage);
-
-const server = http.createServer((req, res) => {
-
-    let origin = req.headers.origin;
-    const allowedOrigins = config.ALLOWD_ORIGINS.split(",");
-
-    allowedOrigins.forEach(o => {
-        if(o.startsWith(origin)) {
-            res.setHeader("Access-Control-Allow-Origin", origin);
+app.get("/api/package/:name", async (req, res) => {
+    try {
+        const package = await packages.getPackage(req.params.name);
+        if(package.name.length < 1) {
+            // Package not found.
+            res.status(404).send()
+        } else {
+            res.status(200).json(package);
         }
-    })
-    res.setHeader("Access-Control-Allow-Methods", "GET, OPTIONS");
-    
-    router.route(req, res)
+    } catch(e) {
+        console.log(e)
+        res.status(500).send();
+    }
 });
 
-server.listen(port, () => {
-    console.log(`Server running on port ${port}`);
-});
+app.listen(process.env.PORT || 3000, () => console.log("Server running"));

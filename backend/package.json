@@ -1,11 +1,14 @@
 {
-  "name": "dpkg-status-backend",
+  "name": "dpkg-viewer-backend",
   "version": "1.0.0",
-  "description": "Zero dependency Node.js application to read package data from /var/lib/dpkg/status in Debian and Ubuntu machines",
-  "main": "app.js",
+  "description": "",
+  "main": "index.js",
   "scripts": {
-    "start": "node app"
+    "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "Tatu Riihimäki",
-  "license": "ISC"
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.17.1"
+  }
 }
