@@ -7,7 +7,7 @@ module.exports = merge(common, {
     plugins: [
         new webpack.DefinePlugin({
             "process.env": {
-                "API_URL": JSON.stringify("https://pkg-viewer.herokuapp.com")
+                "API_URL": JSON.stringify("https://pkg-viewer.herokuapp.com/api")
             }
         }),        
     ]
