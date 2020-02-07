@@ -3,7 +3,7 @@
 
 The project consists of two separate projects: the frontend and the backend. There is a shared top level package.json, but it is there only to enable deployment of two projects under single Heroku app.
 
-**The backend** is a zero dependency Node.js application that reads packages from /var/lib/dpkg/status (or mock data) and exposes them through an API.
+**The backend** is a Node.js application that reads packages from /var/lib/dpkg/status (or mock data) and exposes them through an API.
 
 **The frontend** is a minimal Vue.js project that consumes the API.
 
