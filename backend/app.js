@@ -3,7 +3,7 @@ const app = express();
 const packages = require("./package-api");
 
 app.use((req, res, next) => {
-    // Client runs in port 8080 in dev mode.
+    // Client runs in port 8080 in dev mode whereas the server runs in port 3000.
     res.setHeader("Access-Control-Allow-Origin", "http://localhost:8080");
     if(req.method === "OPTIONS") {
         res.setHeader("Access-Control-Allow-Methods", "GET")
