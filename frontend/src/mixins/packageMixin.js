@@ -1,5 +1,3 @@
-import packageApi from "../package-api";
-
 export default {
     methods: {
         requestPackageDetails: function(packageName) {
