@@ -1,11 +1,9 @@
-import api from "../api";
+import packageApi from "../package-api";
 
 export default {
     methods: {
         requestPackageDetails: function(packageName) {
-            api.getPackage(packageName).then(p => {
-                this.$emit("package-request", packageName);
-            })
+            this.$emit("package-request", packageName);
         }
     }
 }

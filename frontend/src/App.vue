@@ -20,7 +20,7 @@ import packageDetails from "./components/PackageDetails.vue";
 import header from "./components/Header.vue";
 import footer from "./components/Footer.vue";
 import error from "./components/Error.vue";
-import api from "./api";
+import packageApi from "./package-api";
 
 export default {
     components: {
@@ -42,32 +42,32 @@ export default {
     methods: {
         showDetails: function(packageName) {
             this.loadingDetails = true;
-            api.getPackage(packageName)
-                .then(response => {
-                    this.selectedPackage = response.data;
-                    this.error = "";
-                })
-                .catch(err => {
-                    this.error = "Failed to fetch details for package " + packageName;
-                })
-                .finally(() => {
-                    this.loadingDetails = false;
-                });
+            packageApi.getPackage(packageName)
+            .then(response => {
+                this.error = "";
+                this.selectedPackage = response.data;
+            })
+            .catch(err => {
+                this.error = "Failed to fetch details for package " + packageName;
+            })
+            .finally(() => {
+                this.loadingDetails = false;
+            });
         }
     },
     created: function() {
         this.loadingPackages = true;
-        api.getPackageNames()
-            .then(response => {
-                this.packages = response.data;
-                this.error = "";
-            })
-            .catch(err => {
-                this.error = "Failed to fetch packages";
-            })
-            .finally(() => {
-                this.loadingPackages = false;
-            });
+        packageApi.getPackageNames()
+        .then(response => {
+            this.error = "";
+            this.packages = response.data;
+        })
+        .catch(err => {
+            this.error = "Failed to fetch packages";
+        })
+        .finally(() => {
+            this.loadingPackages = false;
+        });
     }
 }
 </script>
