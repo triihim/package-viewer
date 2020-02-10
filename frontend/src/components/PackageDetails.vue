@@ -1,5 +1,5 @@
 <template>
-    <div id="details">
+    <div id="package-details">
         <p v-if="loading">Loading...</p>
         <div v-if="!loading">
             <h2>{{pkg.name}}</h2>
@@ -49,29 +49,28 @@ export default {
 </script>
 
 <style scoped>
-    
-    #details {
-        flex: 2;
-        background-color: #eee;
-        padding: 20px;
+    #package-details {
         overflow-y: scroll;
+        padding: 20px;
+        box-shadow: #333 0px -7px 7px -10px inset;
+        background-color: #fcfcfc;
+    }
+    h2 {
+        padding-bottom: 10px;
+    }
+    h3 {
+        border-bottom: 1px solid #ccc;
+        padding: 3px;
+        margin: 8px 0;
+    }
+    li {
+        margin: 3px 0;
     }
     .clickable {
-        color: #4e4eff;
+        color: #8a2be2;
         cursor: pointer;
     }
     .clickable:hover {
         text-decoration: underline;
     }
-    h2, h3, p {
-        margin: 10px 0;
-    }
-    h2 {
-        font-size: 1.5rem;
-    }
-    h3 {
-        font-size: 1.1rem;
-        border-bottom: 2px solid #333;
-    }
-    
 </style>

@@ -1,0 +1,56 @@
+html, body {
+    height: 100%;
+    width: 100%;
+}
+
+#wrapper {
+    height: 100vh;
+    max-height: 100vh;
+    max-width: 960px;
+    width: 95%;
+    margin: auto;
+    display: grid;
+    grid-template-columns: 30% 70%;
+    grid-template-rows: minmax(70px, 10vh) 
+                        minmax(150px, 30vh)
+                        minmax(150px, 50vh)
+                        minmax(50px, 10vh);
+    grid-template-areas: 
+    "header header"
+    "package-list package-list"
+    "package-details package-details"
+    "footer footer";
+}
+
+header {
+    grid-area: header;
+}
+
+footer {
+    grid-area: footer;
+}
+
+#package-list {
+    grid-area: package-list;
+}
+
+#package-details {
+    grid-area: package-details;
+}
+
+#error {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+}
+
+@media screen and (min-width: 760px) {
+    #wrapper {
+        grid-template-areas: 
+        "header header"
+        "package-list package-details"
+        "package-list package-details"
+        "footer footer";
+    }
+}

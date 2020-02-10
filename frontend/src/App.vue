@@ -1,15 +1,19 @@
 <template>
     <div id="wrapper">
         <app-header></app-header>
-        <error v-if="error.length > 0" v-bind:error="error"></error>
-        <main id="content">
-            <package-list v-on:package-request="showDetails($event)" 
-                v-bind:packages="packages"
-                v-bind:loading="loadingPackages"></package-list>
-            <package-details v-on:package-request="showDetails($event)" 
-                v-bind:pkg="selectedPackage"
-                v-bind:loading="loadingDetails"></package-details>
-        </main>
+        <error 
+            v-if="error.length > 0" v-bind:error="error">
+        </error>
+        <package-list 
+            v-on:package-request="showDetails($event)" 
+            v-bind:packages="packages"
+            v-bind:loading="loadingPackages">
+        </package-list>
+        <package-details 
+            v-on:package-request="showDetails($event)" 
+            v-bind:pkg="selectedPackage"
+            v-bind:loading="loadingDetails">
+        </package-details>
         <app-footer></app-footer>
     </div>
 </template>
@@ -73,24 +77,5 @@ export default {
 </script>
 
 <style scoped>
-
-    #wrapper {
-        height: 100vh;
-        display: flex;
-        flex-direction: column;        
-        width: 95%;
-        margin: 0 auto;
-        transition-duration: .2s;
-    }
-    #content {
-        overflow: hidden;
-        display: flex;
-        flex: 1;
-    }
-    @media only screen and (min-width: 1100px) {
-        #wrapper {
-            width: 50%;
-        }
-    }
 
 </style>

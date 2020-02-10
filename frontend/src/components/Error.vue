@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div id="error">
         Error: {{error}}
     </div>
 </template>
@@ -14,8 +14,9 @@ export default {
 
 <style scoped>
     div {
+        text-align: center;
         background-color: #f75f5f;
-        padding: 20px 10px;
+        padding: 5px 10px;
         color: #fff;
     }
 </style>

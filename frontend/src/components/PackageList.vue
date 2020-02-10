@@ -1,12 +1,14 @@
 <template>
     <div id="package-list">
         <input type="text" placeholder="Search" v-model="search">
-        <p v-if="loading">Loading...</p>
-        <ul v-if="!loading">
-            <li v-for="(pkg, i) in filteredPackages" v-bind:key="i" v-on:click="requestPackageDetails(pkg)">
-                {{pkg}}
-            </li>
-        </ul>
+        <div id="list">
+            <p v-if="loading">Loading...</p>
+            <ul v-if="!loading">
+                <li v-for="(pkg, i) in filteredPackages" v-bind:key="i" v-on:click="requestPackageDetails(pkg)">
+                    {{pkg}}
+                </li>
+            </ul>
+        </div>
     </div>
 </template>
 
@@ -38,30 +40,34 @@ export default {
     #package-list {
         display: flex;
         flex-direction: column;
-        background-color: #E1F4F3;
-        flex: 1;
-    }
-    ul {
-        overflow-y: scroll;
-    }
-    li {
-        font-size: 1.1rem;
-        padding: 5px 10px;
-        cursor: pointer;
-    }
-    li:hover {
-        background-color: #333;
-        color: #eee;
     }
     input {
-        font-size: 1.1rem;
-        padding: 10px;
+        padding: 7px;
+        font-size: 1.2rem;
         border: none;
-    }
-    input:focus {
         outline: none;
+        border-bottom: 1px solid #ccc;
+        background-color: #fcfcfc;
+    }   
+    #list {
+        overflow-y: scroll;
+        flex: 1;
+        box-shadow: #333 0px 7px 7px -10px inset,
+                    #333 0px -7px 7px -10px inset;
     }
     p {
         padding: 5px;
+    }
+    li {
+        font-size: 1.1rem;
+        padding: 7px;
+        cursor: pointer;
+    }
+    li:hover {
+        background-color: #8a2be2;
+        color: #fff;
+    }
+    li:active {
+        background-color: #701ac1;
     }
 </style>

@@ -16,16 +16,14 @@ export default {
 
 <style scoped>
     footer {
-        border-top: 3px solid #706C61;
+        border-top: 2px solid blueviolet;
         text-align: center;
-        padding-top: 10px;
-        min-height: 50px;
+        padding-top: 15px;
     }
     a {
         text-decoration: none;
-        color: #333;
     }
     a:hover {
-        text-decoration: underline;
+        color: blueviolet;
     }
 </style>

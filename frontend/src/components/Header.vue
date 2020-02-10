@@ -12,14 +12,11 @@ export default {
 
 <style scoped>
     header {
+        border-bottom: 2px solid #8a2be2;
         position: relative;
-        border-bottom: 3px solid #706C61;
-        height: 10vh;
-        min-height: 50px;
     }
     h1 {
         position: absolute;
-        bottom: 10px;
-        font-size: 2rem;
+        bottom: 8px;
     }
 </style>

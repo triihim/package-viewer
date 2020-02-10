@@ -1,12 +1,21 @@
 @import "./reset.css";
+@import "./layout.css";
 
-html, body {
+body, html, input {
     font-size: 16px;
-    height: 100%;
-    width: 100%;
+    font-family: monospace;
+    color: #303030;
 }
 
-body, input {
-    font-family: monospace;
+h1 {
+    font-size: 2rem;
+}
+
+h2 {
+    font-size: 1.6rem;
+}
+
+h3 {
+    font-size: 1.3rem;
 }
 
