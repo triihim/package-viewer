@@ -67,7 +67,8 @@ const readPackage = name => {
                 // Read fields of the requested package.
                 pkg.name = currentPackage;
                 if(isDependsLine(line)) {
-                    // Parse dependencies string into an array.
+                    // Parse dependencies string into an array. Separate all dependencies by a comma.
+                    // Alternative dependencies are separated by a pipe character so they need to be replaced.
                     let dependenciesArray = getKvValue(line).split("|").join(",").split(",");
                     // Drop version numbers. E.g. packageName (>= 1.2.3) ==> packageName.
                     pkg.dependencies = dependenciesArray.map(d => d.trim().split(" ")[0]);

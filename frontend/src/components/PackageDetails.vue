@@ -60,7 +60,7 @@ export default {
     }
     h3 {
         border-bottom: 1px solid #ccc;
-        padding: 3px;
+        padding: 3px 0;
         margin: 8px 0;
     }
     li {
