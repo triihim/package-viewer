@@ -18,6 +18,14 @@ const isDependency = (dependsLine, name) => (new RegExp(`\\s${name}(,|\\s\\(|$)`
 
 const getKvValue = keyValueString => keyValueString.split(":")[1].trim();
 
+const parseDependenciesLine = line => {
+    // Parses dependencies string into an array.
+    // Alternative dependencies are separated by a pipe character so they need to be replaced by a comma.
+    let dependenciesArray = getKvValue(line).split("|").join(",").split(",");
+    // Drop version numbers. E.g. packageName (>= 1.2.3) ==> packageName.
+    return dependenciesArray.map(d => d.trim().split(" ")[0]);
+}
+
 
 const readAllPackageNames = () => {
     return new Promise((resolve, reject) => {
@@ -67,11 +75,7 @@ const readPackage = name => {
                 // Read fields of the requested package.
                 pkg.name = currentPackage;
                 if(isDependsLine(line)) {
-                    // Parse dependencies string into an array. Separate all dependencies by a comma.
-                    // Alternative dependencies are separated by a pipe character so they need to be replaced.
-                    let dependenciesArray = getKvValue(line).split("|").join(",").split(",");
-                    // Drop version numbers. E.g. packageName (>= 1.2.3) ==> packageName.
-                    pkg.dependencies = dependenciesArray.map(d => d.trim().split(" ")[0]);
+                    pkg.dependencies = parseDependenciesLine(line);
                 } else if(isDescriptionLine(line)) {
                     pkg.description = getKvValue(line);
                 } else if(pkg.description.length > 0 && isIndentedLine(line)) {
@@ -89,6 +93,7 @@ const readPackage = name => {
         rs.on("close", () => {
             if(pkg.dependencies.length > 0) {
                 // Add isKnown property to the dependencies to differentiate between known and not known packages.
+                // I.e. compare dependencies list to encountered packages during read through.
                 pkg.dependencies = pkg.dependencies.map(n => {
                     return {name: n, isKnown: knownPackages.indexOf(n) > -1};
                 });
